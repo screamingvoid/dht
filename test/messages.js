@@ -14,7 +14,8 @@ test('basic noise payload', function (t) {
     addresses6: [],
     udx: null,
     secretStream: null,
-    relayThrough: null
+    relayThrough: null,
+    userData: null
   }
 
   m.noisePayload.preencode(state, c)
@@ -56,7 +57,8 @@ test('noise payload with holepunch and addresses', function (t) {
     addresses6: [],
     udx: null,
     secretStream: null,
-    relayThrough: null
+    relayThrough: null,
+    userData: null
   }
 
   m.noisePayload.preencode(state, c)
@@ -87,7 +89,8 @@ test('noise payload only addresses', function (t) {
     addresses6: [],
     udx: null,
     secretStream: null,
-    relayThrough: null
+    relayThrough: null,
+    userData: null
   }
 
   m.noisePayload.preencode(state, c)
@@ -118,7 +121,8 @@ test('noise payload ipv6', function (t) {
     }],
     udx: null,
     secretStream: null,
-    relayThrough: null
+    relayThrough: null,
+    userData: null
   }
 
   m.noisePayload.preencode(state, c)
@@ -150,7 +154,8 @@ test('noise payload newer version', function (t) {
     addresses6: [],
     udx: null,
     secretStream: null,
-    relayThrough: null
+    relayThrough: null,
+    userData: null
   })
 })
 
