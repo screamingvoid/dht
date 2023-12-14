@@ -1,5 +1,5 @@
 {
-  "name": "hyperdht",
+  "name": "@screamingvoid/dht",
   "version": "6.11.2",
   "description": "The DHT powering Hyperswarm",
   "main": "index.js",

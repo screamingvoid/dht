@@ -1,4 +1,4 @@
-const DHT = require('dht-rpc')
+const DHTRPC = require('dht-rpc')
 const sodium = require('sodium-universal')
 const c = require('compact-encoding')
 const b4a = require('b4a')
@@ -14,7 +14,7 @@ const RawStreamSet = require('./lib/raw-stream-set')
 const ConnectionPool = require('./lib/connection-pool')
 const { STREAM_NOT_CONNECTED } = require('./lib/errors')
 
-class HyperDHT extends DHT {
+class DHT extends DHTRPC {
   constructor (opts = {}) {
     const port = opts.port || 49737
     const bootstrap = opts.bootstrap || BOOTSTRAP_NODES
@@ -452,10 +452,10 @@ class HyperDHT extends DHT {
   }
 }
 
-HyperDHT.BOOTSTRAP = BOOTSTRAP_NODES
-HyperDHT.FIREWALL = FIREWALL
+DHT.BOOTSTRAP = BOOTSTRAP_NODES
+DHT.FIREWALL = FIREWALL
 
-module.exports = HyperDHT
+module.exports = DHT
 
 function mapLookup (node) {
   if (!node.value) return null
