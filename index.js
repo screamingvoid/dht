@@ -1,4 +1,4 @@
-const DHTRPC = require('dht-rpc')
+const DHTRPC = require('@screamingvoid/dht-rpc')
 const sodium = require('sodium-universal')
 const c = require('compact-encoding')
 const b4a = require('b4a')
@@ -119,7 +119,7 @@ class DHT extends DHTRPC {
       socks.push(sock)
 
       // semi terrible heuristic until we proper fix local connections by racing them to the remote...
-      const promise = new Promise(resolve => {
+      const promise = new Promise((resolve) => {
         sock.on('message', () => resolve(true))
         setTimeout(() => resolve(false), 500)
         sock.trySend(b4a.alloc(1), sock.address().port, addr.host)
@@ -161,7 +161,8 @@ class DHT extends DHTRPC {
     const userCommit = opts.commit || noop
     const signUnannounce = opts.signUnannounce || Persistent.signUnannounce
 
-    if (this._persistent !== null) { // unlink self
+    if (this._persistent !== null) {
+      // unlink self
       this._persistent.unannounce(target, keyPair.publicKey)
     }
 
@@ -185,16 +186,7 @@ class DHT extends DHTRPC {
 
       if (!found) return data
 
-      unannounces.push(
-        dht._requestUnannounce(
-          keyPair,
-          dht,
-          target,
-          data.token,
-          data.from,
-          signUnannounce
-        ).catch(noop)
-      )
+      unannounces.push(dht._requestUnannounce(keyPair, dht, target, data.token, data.from, signUnannounce).catch(noop))
 
       return data
     }
@@ -209,20 +201,10 @@ class DHT extends DHTRPC {
 
     opts = { ...opts, commit }
 
-    return opts.clear
-      ? this.lookupAndUnannounce(target, keyPair, opts)
-      : this.lookup(target, opts)
+    return opts.clear ? this.lookupAndUnannounce(target, keyPair, opts) : this.lookup(target, opts)
 
     function commit (reply, dht) {
-      return dht._requestAnnounce(
-        keyPair,
-        dht,
-        target,
-        reply.token,
-        reply.from,
-        relayAddresses,
-        signAnnounce
-      )
+      return dht._requestAnnounce(keyPair, dht, target, reply.token, reply.from, relayAddresses, signAnnounce)
     }
   }
 
@@ -296,7 +278,9 @@ class DHT extends DHTRPC {
         }
       }
 
-      return signed ? dht.request({ token: reply.token, target, command: COMMANDS.MUTABLE_PUT, value: signed }, reply.from) : Promise.resolve(null)
+      return signed
+        ? dht.request({ token: reply.token, target, command: COMMANDS.MUTABLE_PUT, value: signed }, reply.from)
+        : Promise.resolve(null)
     }
   }
 
@@ -396,12 +380,7 @@ class DHT extends DHTRPC {
 
     if (!stream.connected) throw STREAM_NOT_CONNECTED()
 
-    rawStream.connect(
-      stream.socket,
-      remoteId,
-      stream.remotePort,
-      stream.remoteHost
-    )
+    rawStream.connect(stream.socket, remoteId, stream.remotePort, stream.remoteHost)
   }
 
   createRawStream (opts) {
@@ -422,12 +401,15 @@ class DHT extends DHTRPC {
 
     const value = c.encode(m.announce, ann)
 
-    return dht.request({
-      token,
-      target,
-      command: COMMANDS.ANNOUNCE,
-      value
-    }, from)
+    return dht.request(
+      {
+        token,
+        target,
+        command: COMMANDS.ANNOUNCE,
+        value
+      },
+      from
+    )
   }
 
   async _requestUnannounce (keyPair, dht, target, token, from, sign) {
@@ -443,12 +425,15 @@ class DHT extends DHTRPC {
 
     const value = c.encode(m.announce, unann)
 
-    return dht.request({
-      token,
-      target,
-      command: COMMANDS.UNANNOUNCE,
-      value
-    }, from)
+    return dht.request(
+      {
+        token,
+        target,
+        command: COMMANDS.UNANNOUNCE,
+        value
+      },
+      from
+    )
   }
 }
 
@@ -526,8 +511,11 @@ function toRange (n) {
 
 function addNode (node) {
   // always skip these testnet nodes that got mixed in by accident, until they get updated
-  return !(node.port === 49738 && (node.host === '134.209.28.98' || node.host === '167.99.142.185')) &&
-    !(node.port === 9400 && node.host === '35.233.47.252') && !(node.host === '150.136.142.116')
+  return (
+    !(node.port === 49738 && (node.host === '134.209.28.98' || node.host === '167.99.142.185')) &&
+    !(node.port === 9400 && node.host === '35.233.47.252') &&
+    !(node.host === '150.136.142.116')
+  )
 }
 
 const defaultMaxSize = 65536
@@ -545,11 +533,11 @@ function defaultCacheOpts (opts) {
       records: { maxSize, maxAge },
       refreshes: { maxSize, maxAge },
       mutables: {
-        maxSize: maxSize / 2 | 0,
+        maxSize: (maxSize / 2) | 0,
         maxAge: opts.maxAge || 48 * 60 * 60 * 1000 // 48 hours
       },
       immutables: {
-        maxSize: maxSize / 2 | 0,
+        maxSize: (maxSize / 2) | 0,
         maxAge: opts.maxAge || 48 * 60 * 60 * 1000 // 48 hours
       }
     }
